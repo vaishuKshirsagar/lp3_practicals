@@ -1,0 +1,78 @@
+import pandas as pd
+
+df = pd.read_csv("Churn_Modelling.csv")
+df
+
+df.info()
+
+df.describe()
+
+df.head()
+
+#Check Datatypes
+df.dtypes
+
+df['Geography'].unique()
+
+df = df.drop('Surname', axis = 1 ) #drop unwanted features
+
+from sklearn.preprocessing import LabelEncoder #importing label encoder
+LE = LabelEncoder()
+#encoding object type with int labels
+df['Geography'] = LE.fit_transform(df['Geography'])
+df['Geography'].unique()
+
+df['Gender'] = LE.fit_transform(df['Gender'])
+df['Gender'].unique()
+
+df
+
+df.dtypes
+
+df.shape
+
+#dropping features not related to objects
+df = df.drop('RowNumber', axis = 1) 
+df = df.drop('CustomerId', axis = 1)
+
+import seaborn as sns
+df.corr() #finding corellation for finding features
+
+# Visualizing Correlation in Heatmap
+sns.heatmap(df.corr(), annot=True)
+
+df.plot()
+
+# RobustScaler
+from sklearn.preprocessing import RobustScaler #scaling of dataframe
+scalar = RobustScaler()
+x = df.drop('Exited', axis=1)
+y = df['Exited']
+x_scaled = scalar.fit_transform(x)
+x_scaled
+
+
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x_scaled, y, test_size=0.20, random_state=42)
+
+from sklearn.linear_model import LogisticRegression
+LR = LogisticRegression()
+LR.fit(x_train,y_train)
+
+y_pred = LR.predict(x_test)
+
+from sklearn.metrics import accuracy_score #evaluation of model
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy*100}%")
+
+#Decision tree model
+from sklearn.tree import DecisionTreeClassifier
+DTC = DecisionTreeClassifier()
+DTC.fit(x_train,y_train)
+
+y_pred = DTC.predict(x_test)
+
+#evaluation
+from sklearn.metrics import accuracy_score
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy*100}%")

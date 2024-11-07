@@ -1,0 +1,100 @@
+# basicimports
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import random as rd
+
+# Load Dataset
+df = pd.read_csv('emails.csv')
+df
+
+#Description
+df.describe()
+
+#Info 
+df.info()
+
+#Check Datatypes
+df.dtypes
+
+#ploting sns.boxplot 
+sns.boxplot(df)
+
+#Check balance of data for classification type of problem with identifing unique values
+#Histogram
+sns.histplot(data=df, x='Prediction', y='count')
+df.hist('Prediction')
+
+# Drop 'Email No.' as it's just an identifier and doesn't provide predictive value
+df = df.drop(columns=['Email No.'])
+# Separate features and target
+X = df.drop(columns=['Prediction']) # X = df.iloc[,-1] 
+y = df['Prediction']
+
+
+# import train_test_split from sklearn
+from sklearn.model_selection import train_test_split
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+
+# import knn from sklearn and metrices for evaluation support
+from sklearn.neighbors import KNeighborsClassifier
+# K-Nearest Neighbors
+knn = KNeighborsClassifier(n_neighbors=7)
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+
+# Evaluate KNN
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, ConfusionMatrixDisplay
+acc = accuracy_score(y_test, y_pred)
+creport = classification_report(y_test, y_pred)
+cm = confusion_matrix(y_test, y_pred)
+print("KNN Performance:")
+print("Accuracy:", acc)
+print("Accuracy Percentage:", acc*100)
+print("Classification Report:\n", creport)
+print("Confusion Matrix:\n", cm)
+
+
+#Visualization of Confusion Matrix
+disp = ConfusionMatrixDisplay.from_predictions(y_test, y_pred)
+
+import pandas as pd
+
+# Load dataset
+df = pd.read_csv('emails.csv')
+
+# Drop 'Email No.' as it's just an identifier and doesn't provide predictive value
+df = df.drop(columns=['Email No.'])
+# Separate features and target
+X = df.drop(columns=['Prediction'])
+y = df['Prediction']
+
+from sklearn.model_selection import train_test_split
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+#Creating SVM model
+from sklearn.svm import SVC
+
+
+# Support Vector Machine
+svm = SVC(kernel='linear')
+svm.fit(X_train, y_train)
+svm_predictions = svm.predict(X_test)
+
+#Imports for Evaluation
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, ConfusionMatrixDisplay
+
+acc = accuracy_score(y_test, svm_predictions)
+creport = classification_report(y_test, svm_predictions)
+cm = confusion_matrix(y_test, svm_predictions)
+
+# Evaluate SVM
+print("SVM Performance:")
+print("Accuracy:", acc)
+print("Classification Report:\n", creport)
+print("Confusion Matrix:\n", cm)
+print(ConfusionMatrixDisplay.from_predictions(y_test, y_pred))
